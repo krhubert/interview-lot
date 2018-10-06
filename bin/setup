@@ -1,0 +1,22 @@
+#!/bin/bash -e
+
+## Add script to:
+# * Install dependencies
+# * Build/Compile
+# * Run Test Suit to validate
+#
+# After this is run, bin/parking_lot
+# should Just Work.
+
+GOPATH=${GOPATH:=$HOME/go}
+
+# link to gopath
+if [ ! -d $GOPATH/src/parking_lot ]; then
+  ln -s $(pwd) $GOPATH/src/parking_lot
+fi
+
+# build
+go build -o bin/parking_lot 
+
+# run tests
+./bin/run_functional_tests
