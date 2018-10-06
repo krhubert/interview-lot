@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11
+    working_directory: /go/src/parking_lot
+    steps:
+      - checkout
+      - run: go test -v ./...
+      - run: go build -ldflags="-X parking_lot/version.Version=$CIRCLE_TAG" 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - parking_lot
+
+  lint:
+    docker:
+      - image: moogar0880/gometalinter
+    working_directory: /go/src/parking_lot
+    steps:
+      - checkout
+      - run: gometalinter --vendor --enable-all ./...
+
+  publish:
+    docker:
+      - image: circleci/golang:1.11
+    working_directory: /go/src/parking_lot
+    steps:
+      - attach_workspace:
+          at: .
+      - name: publish parking lot
+        command: echo parking_lot published
+
+workflows:
+  version: 2
+  build_and_publish:
+    jobs:
+      - build
+      - lint
+      - publish:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+$/
+            branches:
+              ignore: /.*/
