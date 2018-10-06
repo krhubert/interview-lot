@@ -1,0 +1,8 @@
+.*.swp
+.DS_Store
+*.log
+*.exe
+coverage.txt
+profile.out
+main
+parking_lot
