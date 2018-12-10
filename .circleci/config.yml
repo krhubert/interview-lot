@@ -12,14 +12,13 @@ jobs:
           root: .
           paths:
             - parking_lot
-
   lint:
     docker:
-      - image: moogar0880/gometalinter
-    working_directory: /go/src/parking_lot
+      - image: golangci/golangci-lint:v1.12
+    working_directory: /go/src/github.com/mesg-foundation/core
     steps:
       - checkout
-      - run: gometalinter --vendor --enable-all ./...
+      - run: golangci-lint run
 
   publish:
     docker:

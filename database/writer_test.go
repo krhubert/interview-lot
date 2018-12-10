@@ -54,7 +54,7 @@ func TestMemoryWriterSave(t *testing.T) {
 		t.Fatalf("save on invalid slot - want: %d, got: %d", 1, si)
 	}
 
-	// test parking is full
+	// test parking when it's full
 	if _, err := w.Save(extraTestCar); err != ErrFull {
 		t.Fatalf("save error - want: %s, got: %s", ErrFull, err)
 	}

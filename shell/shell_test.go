@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 )
@@ -19,6 +20,16 @@ func newShellWithInput(input string) (*bytes.Buffer, io.ReadCloser, *Shell) {
 		}
 	)
 	return out, in, s
+}
+
+func TestNewShell(t *testing.T) {
+	s := NewShell()
+	if s.stdout != os.Stdout {
+		t.Errorf("shell output should be set to os.Stdout")
+	}
+	if s.isPipe {
+		t.Errorf("pipe should be false")
+	}
 }
 
 func TestPrintPrompt(t *testing.T) {

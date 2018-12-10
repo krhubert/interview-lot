@@ -32,24 +32,24 @@ func (e *Executor) Execute(program *ast.Program, db *database.Database) {
 	for _, stmt := range program.Statements {
 		switch stmt := stmt.(type) {
 		case *ast.CreateParkingLotStatement:
-			e.execCreateParkingLotStatement(stmt, db)
+			e.execCreateParkingLotStatement(db, stmt)
 		case *ast.ParkStatement:
-			e.execParkStatement(stmt, db)
+			e.execParkStatement(db, stmt)
 		case *ast.LeaveStatement:
-			e.execLeaveStatement(stmt, db)
+			e.execLeaveStatement(db, stmt)
 		case *ast.StatusStatement:
-			e.execStatusStatement(stmt, db)
+			e.execStatusStatement(db)
 		case *ast.RegistrationNumbersForCarsWithColourStatement:
-			e.execRegistrationNumbersForCarsWithColourStatement(stmt, db)
+			e.execRegistrationNumbersForCarsWithColourStatement(db, stmt)
 		case *ast.SlotNumbersForCarsWithColourStatement:
-			e.execSlotNumbersForCarsWithColourStatement(stmt, db)
+			e.execSlotNumbersForCarsWithColourStatement(db, stmt)
 		case *ast.SlotNumberForRegistrationNumberStatement:
-			e.execSlotNumberForRegistrationNumberStatement(stmt, db)
+			e.execSlotNumberForRegistrationNumberStatement(db, stmt)
 		}
 	}
 }
 
-func (e *Executor) execCreateParkingLotStatement(stmt *ast.CreateParkingLotStatement, db *database.Database) {
+func (e *Executor) execCreateParkingLotStatement(db *database.Database, stmt *ast.CreateParkingLotStatement) {
 	if err := db.Init(stmt.Number); err != nil {
 		fmt.Fprintln(e.Stderr, err)
 	} else {
@@ -57,7 +57,7 @@ func (e *Executor) execCreateParkingLotStatement(stmt *ast.CreateParkingLotState
 	}
 }
 
-func (e *Executor) execParkStatement(stmt *ast.ParkStatement, db *database.Database) {
+func (e *Executor) execParkStatement(db *database.Database, stmt *ast.ParkStatement) {
 	car, err := database.NewCar(stmt.RegistrationNumber, stmt.Color)
 	if err != nil {
 		fmt.Fprintln(e.Stderr, err)
@@ -71,7 +71,7 @@ func (e *Executor) execParkStatement(stmt *ast.ParkStatement, db *database.Datab
 	}
 }
 
-func (e *Executor) execLeaveStatement(stmt *ast.LeaveStatement, db *database.Database) {
+func (e *Executor) execLeaveStatement(db *database.Database, stmt *ast.LeaveStatement) {
 	if err := db.Remove(stmt.Number - 1); err != nil {
 		fmt.Fprintln(e.Stderr, err)
 	} else {
@@ -79,7 +79,7 @@ func (e *Executor) execLeaveStatement(stmt *ast.LeaveStatement, db *database.Dat
 	}
 }
 
-func (e *Executor) execStatusStatement(stmt *ast.StatusStatement, db *database.Database) {
+func (e *Executor) execStatusStatement(db *database.Database) {
 	cars, err := db.GetAll()
 	if err != nil {
 		fmt.Fprintln(e.Stderr, err)
@@ -98,7 +98,7 @@ func (e *Executor) execStatusStatement(stmt *ast.StatusStatement, db *database.D
 	}
 }
 
-func (e *Executor) execRegistrationNumbersForCarsWithColourStatement(stmt *ast.RegistrationNumbersForCarsWithColourStatement, db *database.Database) {
+func (e *Executor) execRegistrationNumbersForCarsWithColourStatement(db *database.Database, stmt *ast.RegistrationNumbersForCarsWithColourStatement) {
 	cars, err := db.FilterCars(database.FilterByColor(stmt.Color))
 	if err != nil {
 		fmt.Fprintln(e.Stderr, err)
@@ -115,7 +115,7 @@ func (e *Executor) execRegistrationNumbersForCarsWithColourStatement(stmt *ast.R
 	}
 }
 
-func (e *Executor) execSlotNumbersForCarsWithColourStatement(stmt *ast.SlotNumbersForCarsWithColourStatement, db *database.Database) {
+func (e *Executor) execSlotNumbersForCarsWithColourStatement(db *database.Database, stmt *ast.SlotNumbersForCarsWithColourStatement) {
 	slots, err := db.FilterSlotNumbers(database.FilterByColor(stmt.Color))
 	if err != nil {
 		fmt.Fprintln(e.Stderr, err)
@@ -129,7 +129,7 @@ func (e *Executor) execSlotNumbersForCarsWithColourStatement(stmt *ast.SlotNumbe
 	}
 }
 
-func (e *Executor) execSlotNumberForRegistrationNumberStatement(stmt *ast.SlotNumberForRegistrationNumberStatement, db *database.Database) {
+func (e *Executor) execSlotNumberForRegistrationNumberStatement(db *database.Database, stmt *ast.SlotNumberForRegistrationNumberStatement) {
 	slots, err := db.FilterSlotNumbers(database.FilterByRegistrationNumber(stmt.RegistrationNumber))
 	if err != nil {
 		fmt.Fprintln(e.Stderr, err)

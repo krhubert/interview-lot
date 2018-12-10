@@ -3,7 +3,6 @@ package database
 import (
 	"errors"
 	"fmt"
-	"os"
 )
 
 // Writer is an interface for stroing the cars.
@@ -26,10 +25,10 @@ func (e *ErrOutOfRange) Error() string {
 
 var (
 	// ErrFull is returned when there is no more parking slots.
-	ErrFull = errors.New("Sorry, parking lot is full")
+	ErrFull = errors.New("sorry, parking lot is full")
 	// ErrIdentity is returned when two cars with the same registration number
 	// are saved.
-	ErrIdentity = errors.New("Identity thieves are not welcome, calling police")
+	ErrIdentity = errors.New("identity thieves are not welcome, calling police")
 )
 
 // MemoryWriter is writer that keeps everything in memory.
@@ -59,6 +58,7 @@ func (w *MemoryWriter) Save(car *Car) (int, error) {
 
 		if w.cars[i] == nil && saveIndex == -1 {
 			saveIndex = i
+			break
 		}
 	}
 
@@ -85,10 +85,7 @@ func (w *MemoryWriter) GetAll() ([]*Car, error) {
 }
 
 // FileWriter writes cars info to file.
-type FileWriter struct {
-	file     *os.File
-	capacity int
-}
+type FileWriter struct{}
 
 // NewFileWriter creates new file writer.
 func NewFileWriter(file string) (*FileWriter, error) {

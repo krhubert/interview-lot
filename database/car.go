@@ -48,6 +48,15 @@ func NewCar(registrationNumber, color string) (*Car, error) {
 	}, nil
 }
 
+// MustNewCar creates a car. It panics on error.
+func MustNewCar(registrationNumber, color string) *Car {
+	c, err := NewCar(registrationNumber, color)
+	if err != nil {
+		panic(err)
+	}
+	return c
+}
+
 // RegistrationNumber returns car regitration number.
 func (c *Car) RegistrationNumber() string {
 	return c.registrationNumber
